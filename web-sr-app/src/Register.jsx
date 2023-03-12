@@ -21,9 +21,7 @@ function Register({ history }) {
   };
 
   let signupData = {
-    name: "",
     email: "",
-    username: "",
     password: "",
     passwordAgain: "",
   };
@@ -41,26 +39,27 @@ function Register({ history }) {
     for (const [key] of Object.entries(signupData)) {
       signupData[key] = formData.get(key);
     }
+    if(signupData.password==signupData.passwordAgain){
 
-    const result = await signup(signupData);
-    if (typeof result === "object") {
-      if (result.sucess) {
-        toast.info("SignUp Sucessfull 😍");
-
-        cookies.set("loginToken", result.loginToken, { path: "/" });
-        dispatch({
-          type: "LOGIN_STATUS",
-          item: true,
-        });
-        history.push("/");
+      const result = await signup(signupData.email, signupData.password);
+      console.warn("result",result);
+      if (result.message == "User created successfully!") {
+          toast.info("SignUp Sucessfull 😍");
+  
+          cookies.set("loginToken", result.loginToken, { path: "/" });
+          dispatch({
+            type: "LOGIN_STATUS",
+            item: true,
+          });
+          history.push("/");
+        } else {
+          setSignUpErrors(result.error);
+          toast.error("Resolve the errors to continue");
+        }
       } else {
-        setSignUpErrors(result.errors);
-        toast.error("Resolve the errors to continue");
+        toast.error("The passwords are not equals");
       }
-    } else {
-      toast.error("Something went wrong try again later");
     }
-  };
 
   const submitLogin = async (e) => {
     e.preventDefault();
@@ -70,10 +69,8 @@ function Register({ history }) {
     for (const [key] of Object.entries(loginData)) {
       loginData[key] = formData.get(key);
     }
-    console.log(loginData);
-    const result = await login(loginData);
-    if (typeof result == "object") {
-      if (result.sucess) {
+    const result = await login(loginData.usernameOrEmail, loginData.password);
+    if (result.message == "LogIn successfully!") {
         toast.info("Login Sucessfull 😍");
         cookies.set("loginToken", result.token, { path: "/" });
         dispatch({
@@ -83,12 +80,11 @@ function Register({ history }) {
         history.push("/");
       } else {
         setLoginError(result.error);
-        toast.error("Resolve the errors to continue");
+        toast.error("Password or account invalid");
       }
-    } else {
-      toast.error("Something went wrong try again later");
-    }
   };
+
+  
   return (
     <div className="register-main-container">
       <div className="right">
@@ -117,18 +113,11 @@ function Register({ history }) {
           action="register.php"
           style={{ display: showLoginForm ? "none" : "flex" }}
         >
-          <p>Your Name</p>
-          <span className="show-error">{signupErrors?.name}</span>
-          <input type="text" name="name" placeholder="First Name" />
-
           <p>Email Adress</p>
           <span className="show-error" id="input-field-email">
             {signupErrors?.email}
           </span>
           <input type="email" name="email" placeholder="Email Adress" />
-          <p>Usename</p>
-          <span className="show-error">{signupErrors?.username}</span>
-          <input type="text" name="username" placeholder="Usename" />
           <p>Password</p>
           <span className="show-error">{signupErrors?.password}</span>
           <input type="password" name="password" placeholder="Password" />
@@ -184,6 +173,6 @@ function Register({ history }) {
       </div>
     </div>
   );
-}
+            }
 
 export default Register;

@@ -1,18 +1,24 @@
 import BASE_URL from "../helpers/baseUrl";
 
-const login = (data) => {
+export async function login(email, password) {
   let bodyCredientail = {
-    loginData: data,
+    "email": email,
+    "password": password
   };
-  return fetch(`${BASE_URL}login.php`, {
+  const response= await fetch(`${BASE_URL}/user/login`, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },  
     body: JSON.stringify(bodyCredientail),
   })
-    .then((respone) => respone.json())
-    .then((data) => {
-      return data;
-    })
-    .catch((e) => console.error(e));
+  .catch((error) => ({
+    error,
+  }));  
+  if (response.error) {
+    return { error: response.error };
+  }
+  return await response.json()
 };
 
 export default login;
