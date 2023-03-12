@@ -34,6 +34,11 @@ function Hader() {
     });
   };
 
+  function removeUserFromLocalStorage() {
+    localStorage.removeItem("username");
+    window.location.reload();
+  }
+
   return (
     <div id="header-container" style={{ backgroundColor: albumColor }}>
       <div id="back-and-forward-container">
@@ -83,8 +88,9 @@ function Hader() {
         id="hader-login-button"
         style={{ display: user.name ? "none" : "block" }}
       >
-        <Link to="/register">log in</Link>
-      </div>
+        {localStorage.getItem("username")==null?
+        <Link to="/register">log in</Link>: <Link to="/" onClick={removeUserFromLocalStorage}>Log out</Link>
+     } </div>
       <div
         id="account-option-continer"
         onClick={toggelShowAccountOptions}

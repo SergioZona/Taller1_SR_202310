@@ -82,7 +82,7 @@ body {
 }
 
 #SignupForm input,
-#loginForm input {
+#loginForm input, select{
   width: 90%;
   height: 40px;
   /* background-color: transparent; */

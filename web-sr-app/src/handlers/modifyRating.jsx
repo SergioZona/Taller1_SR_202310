@@ -1,16 +1,16 @@
 import BASE_URL from "../helpers/baseUrl";
 
-export async function login(username, password) {
-  let bodyCredientail = {
+export async function modifyRating(username, track_name) {
+  let body = {
     "username": username,
-    "password": password
+    "track_name":track_name
   };
-  const response= await fetch(`${BASE_URL}/user/login`, {
-    method: "POST",
+  const response= await fetch(`${BASE_URL}/user_track_rate`, {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
     },  
-    body: JSON.stringify(bodyCredientail),
+    body: JSON.stringify(body),
   })
   .catch((error) => ({
     error,
@@ -21,4 +21,4 @@ export async function login(username, password) {
   return await response.json()
 };
 
-export default login;
+export default modifyRating;

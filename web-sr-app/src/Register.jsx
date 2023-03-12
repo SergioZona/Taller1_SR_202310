@@ -14,20 +14,23 @@ function Register({ history }) {
   const [signupErrors, setSignUpErrors] = useState({});
   const [loginError, setLoginError] = useState("");
   const cookies = new Cookies();
-  const [{}, dispatch] = useStateValue();
+  const [{ }, dispatch] = useStateValue();
 
   const toggleForms = () => {
     setShowLoginForm(!showLoginForm);
   };
 
   let signupData = {
-    email: "",
+    username: "",
+    gender: "",
+    age: "",
+    country: "",
     password: "",
     passwordAgain: "",
   };
 
   let loginData = {
-    usernameOrEmail: "",
+    username: "",
     password: "",
   };
 
@@ -40,8 +43,7 @@ function Register({ history }) {
       signupData[key] = formData.get(key);
     }
     if (signupData.password == signupData.passwordAgain) {
-      const result = await signup(signupData.email, signupData.password);
-      console.warn("result", result);
+      const result = await signup(signupData);
       if (result.message == "User created successfully!") {
         toast.info("SignUp Sucessfull 😍");
 
@@ -50,12 +52,14 @@ function Register({ history }) {
           type: "LOGIN_STATUS",
           item: true,
         });
+        localStorage.setItem("username", signupData.username);
         history.push("/");
       } else {
         setSignUpErrors(result.error);
         toast.error("Resolve the errors to continue");
       }
-    } else {
+    } 
+    else {
       toast.error("The passwords are not equals");
     }
   };
@@ -68,7 +72,7 @@ function Register({ history }) {
     for (const [key] of Object.entries(loginData)) {
       loginData[key] = formData.get(key);
     }
-    const result = await login(loginData.usernameOrEmail, loginData.password);
+    const result = await login(loginData.username, loginData.password);
     if (result.message == "LogIn successfully!") {
       toast.info("Login Sucessfull 😍");
       cookies.set("loginToken", result.token, { path: "/" });
@@ -76,6 +80,7 @@ function Register({ history }) {
         type: "LOGIN_STATUS",
         item: true,
       });
+      localStorage.setItem("username", loginData.username);
       history.push("/");
     } else {
       setLoginError(result.error);
@@ -115,7 +120,30 @@ function Register({ history }) {
           <span className="show-error" id="input-field-email">
             {signupErrors?.email}
           </span>
-          <input type="email" name="email" placeholder="Username" />
+          <input type="text" name="username" placeholder="Username" />
+          <p>Gender</p>
+          <select name="gender">
+            <option value="">Please select one…</option>
+            <option value="f">Female</option>
+            <option value="m">Male</option>
+            <option value="nb-binary">Non-Binary</option>
+            <option value="o">Other</option>
+            <option value="NA">Perfer not to Answer</option>
+          </select>
+          <p>Age</p>
+          <input
+            type="number"
+            name="age"
+            placeholder="Age"
+            min={0}
+            max={100}
+          />
+          <p>Country</p>
+          <input
+            type="text"
+            name="country"
+            placeholder="Country"
+          />
           <p>Password</p>
           <span className="show-error">{signupErrors?.password}</span>
           <input type="password" name="password" placeholder="Password" />
@@ -126,6 +154,7 @@ function Register({ history }) {
             name="passwordAgain"
             placeholder="Password Again"
           />
+
           <br />
           <button
             type="submit"
@@ -144,12 +173,12 @@ function Register({ history }) {
             method="POST"
             style={{ display: showLoginForm ? "flex" : "none" }}
           >
-            <p>Email/Username</p>
+            <p>Username</p>
             <span className="show-error">{loginError}</span>
             <input
               type="text"
-              name="usernameOrEmail"
-              placeholder="Email/Username"
+              name="username"
+              placeholder="Username"
             />
             <p>Password</p>
             <input type="password" name="password" placeholder="Password" />

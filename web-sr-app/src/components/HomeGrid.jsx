@@ -60,15 +60,16 @@ function HomeGrid() {
       >
         {apiData.length > 0 &&
           apiData.map(({ id, track_name }) => {
-            console.log(id);
             return (
-              <SongCard
-                songName={track_name}
-                artistName={track_name}
-                imageUrl={url_image}
-                key={track_name}
-                id={id}
-              />
+              <div key={id}>
+                <SongCard
+              songName={track_name}
+              artistName={track_name}
+              imageUrl={url_image}
+              id={id}
+            />
+              </div>
+              
             );
           })}
       </Container>
@@ -85,15 +86,14 @@ function HomeGrid() {
         style={{ maxHeight: 215, overflowY: "scroll" }}
       >
         {users.length > 0 &&
-          users.map(({ id, user_id }) => {
-            return (
+          users.map(({ id, user_id }, index) => {
+            return (<div key={id ? "bb" + id : "default-key-" + index}>
               <SongCard
                 songName={user_id}
                 artistName={user_id}
                 imageUrl={url_image}
-                key={id}
                 id={id}
-              />
+              /></div>
             );
           })}
       </Container>

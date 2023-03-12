@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { PlayArrow } from "@mui/icons-material";
 import imgAlbum from "../assets/images/albumartwork/nota-musical.png";
+import modifyRating from "../handlers/modifyRating";
+import { ToastContainer, toast } from "react-toastify";
 
 const MAX_CHARS = 14;
 
@@ -47,8 +49,15 @@ const SongCard = ({ songName, artistName, imageUrl, id }) => {
     setSelected(!selected);
   };
 
-  const handlePlayClick = () => {
-    setToastOpen(true);
+  const handlePlayClick = async() => {
+    // Modify the rating
+    const result = await modifyRating( localStorage.getItem("username"), songName);
+    if (result.message == "Data updated successfully"){
+      setToastOpen(true);
+    }
+    else{
+      toast.error("Something went wrong, please try again");
+    }
   };
 
   const handleToastClose = () => {
