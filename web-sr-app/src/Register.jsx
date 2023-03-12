@@ -39,27 +39,26 @@ function Register({ history }) {
     for (const [key] of Object.entries(signupData)) {
       signupData[key] = formData.get(key);
     }
-    if(signupData.password==signupData.passwordAgain){
-
+    if (signupData.password == signupData.passwordAgain) {
       const result = await signup(signupData.email, signupData.password);
-      console.warn("result",result);
+      console.warn("result", result);
       if (result.message == "User created successfully!") {
-          toast.info("SignUp Sucessfull 😍");
-  
-          cookies.set("loginToken", result.loginToken, { path: "/" });
-          dispatch({
-            type: "LOGIN_STATUS",
-            item: true,
-          });
-          history.push("/");
-        } else {
-          setSignUpErrors(result.error);
-          toast.error("Resolve the errors to continue");
-        }
+        toast.info("SignUp Sucessfull 😍");
+
+        cookies.set("loginToken", result.loginToken, { path: "/" });
+        dispatch({
+          type: "LOGIN_STATUS",
+          item: true,
+        });
+        history.push("/");
       } else {
-        toast.error("The passwords are not equals");
+        setSignUpErrors(result.error);
+        toast.error("Resolve the errors to continue");
       }
+    } else {
+      toast.error("The passwords are not equals");
     }
+  };
 
   const submitLogin = async (e) => {
     e.preventDefault();
@@ -71,20 +70,19 @@ function Register({ history }) {
     }
     const result = await login(loginData.usernameOrEmail, loginData.password);
     if (result.message == "LogIn successfully!") {
-        toast.info("Login Sucessfull 😍");
-        cookies.set("loginToken", result.token, { path: "/" });
-        dispatch({
-          type: "LOGIN_STATUS",
-          item: true,
-        });
-        history.push("/");
-      } else {
-        setLoginError(result.error);
-        toast.error("Password or account invalid");
-      }
+      toast.info("Login Sucessfull 😍");
+      cookies.set("loginToken", result.token, { path: "/" });
+      dispatch({
+        type: "LOGIN_STATUS",
+        item: true,
+      });
+      history.push("/");
+    } else {
+      setLoginError(result.error);
+      toast.error("Password or account invalid");
+    }
   };
 
-  
   return (
     <div className="register-main-container">
       <div className="right">
@@ -113,11 +111,11 @@ function Register({ history }) {
           action="register.php"
           style={{ display: showLoginForm ? "none" : "flex" }}
         >
-          <p>Email Adress</p>
+          <p>Username</p>
           <span className="show-error" id="input-field-email">
             {signupErrors?.email}
           </span>
-          <input type="email" name="email" placeholder="Email Adress" />
+          <input type="email" name="email" placeholder="Username" />
           <p>Password</p>
           <span className="show-error">{signupErrors?.password}</span>
           <input type="password" name="password" placeholder="Password" />
@@ -173,6 +171,6 @@ function Register({ history }) {
       </div>
     </div>
   );
-            }
+}
 
 export default Register;

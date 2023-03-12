@@ -41,7 +41,15 @@ async def get_user():
 
     # Fetch all the rows and convert them to a list of dictionaries
     rows = cur.fetchall()
+
     data = [{'user_id': row[0], 'password_hash': row[1], 'email': row[2]} for row in rows]
+    # data = [{'user_id': row[0], 
+    #          'gender': row[1], 
+    #          'age': row[2], 
+    #          'country': row[3], 
+    #          'registered': row[4],
+    #          'password_hash': row[5]
+    #          } for row in rows]
 
     # Close the cursor
     cur.close()
@@ -197,6 +205,51 @@ async def get_user_track_by_user_id(id: str):
     # Return the data as a JSON response
     return {'data': data}
 
+"""---------------------------"""
+"""ENDPOINTS - USER-TRACK-RATE"""
+"""---------------------------"""
+# Define a route to get all the rows from the database table
+@app.get('/api/user_track_rate')
+async def get_user_track_rate():
+    # Create a cursor object
+    cur = conn.cursor()
+
+    # Execute a SELECT statement to get all the rows from the table
+    cur.execute('SELECT * FROM user_track_rate')
+
+    # Fetch all the rows and convert them to a list of dictionaries
+    rows = cur.fetchall()
+    data = [{'id': row[0], 'user_id': row[1], 'track_name': row[2], 'rating': row[3]} for row in rows]
+
+    # Close the cursor
+    cur.close()
+
+    # Return the data as a JSON response
+    return {'data': data}
+
+# Define a route to get a single row from the database table by id
+@app.get('/api/user_track_rate/max/{max}')
+async def get_user_track_by_user_id(max: int):
+    # Create a cursor object
+    cur = conn.cursor()
+
+    # Execute a SELECT statement to get the row with the specified id
+
+    cur.execute('SELECT * FROM user_track_rate ORDER BY rating DESC LIMIT ?', (max,))
+
+    # Fetch the row and convert it to a dictionary
+    rows = cur.fetchall()
+    data = [{'id': row[0], 'user_id': row[1], 'track_name': row[2], 'rating': row[3]} for row in rows]
+
+    # Close the cursor
+    cur.close()
+
+    # Return the data as a JSON response
+    return {'data': data}
+
+
+
 # Run the app
 if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=8000)
+
