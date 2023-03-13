@@ -49,14 +49,16 @@ const SongCard = ({ songName, artistName, imageUrl, id }) => {
     setSelected(!selected);
   };
 
-  const handlePlayClick = async() => {
+  const handlePlayClick = async () => {
     // Modify the rating
-    const result = await modifyRating( localStorage.getItem("username"), songName);
-    if (result.message == "Data updated successfully"){
+    const result = await modifyRating(
+      localStorage.getItem("username"),
+      songName
+    );
+    if (result.message == "Data updated successfully") {
       setToastOpen(true);
-    }
-    else{
-      toast.error("Something went wrong, please try again");
+    } else {
+      toast.info("Please login to play a song");
     }
   };
 
