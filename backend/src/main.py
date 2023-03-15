@@ -192,13 +192,13 @@ async def get_top_songs_by_user_id(id: str, max: int):
     return {'data': data}
 
 
-@app.get('/api/user_track_artist/top/{max}')
-async def get_top_songs(max: int):
+@app.get('/api/user_track_artist/songs/top/{max}')
+async def get_top_songs(max: str):
     # Create a cursor object
     cur = conn.cursor()
 
     # Execute a SELECT statement to get the row with the specified id
-    cur.execute('SELECT * FROM user_track_artist ORDER BY reproductions DESC LIMIT ?;', (max))
+    cur.execute('SELECT * FROM user_track_artist ORDER BY rating DESC LIMIT ?;', (max,))
 
     # Fetch the row and convert it to a dictionary
     rows = cur.fetchall()
@@ -325,7 +325,10 @@ async def get_recommendations(user_id: str, top_songs: int, user_based: bool):
     df_data = df_data["data"]
     df_data = pd.DataFrame(df_data)
 
-    if user_based:    
+    df_songs = await get_top_songs_by_user_id(user_id,1)
+    df_songs = df_songs["data"]  
+
+    if user_based and len(df_songs)>0:    
         algo = await model.creation(df_data, user_based)
 
         print("Model created")
@@ -335,7 +338,7 @@ async def get_recommendations(user_id: str, top_songs: int, user_based: bool):
         prediction = prediction[:top_songs].to_dict(orient='records')
 
         return {'data': prediction}
-    else:
+    elif not user_based and len(df_songs)>0:
         algo = dump.load('data/models/ii_pearson.pkl')[1]
 
         print("Model created")
@@ -345,6 +348,8 @@ async def get_recommendations(user_id: str, top_songs: int, user_based: bool):
         prediction = prediction[:top_songs].to_dict(orient='records')
 
         return {'data': prediction}
+    else:
+        return {'data': []}
 
 
 """------"""
