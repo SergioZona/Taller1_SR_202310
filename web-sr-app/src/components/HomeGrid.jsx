@@ -6,39 +6,65 @@ import SongCard from "./SongCard";
 import { Grid, Container } from "@mui/material";
 
 function HomeGrid() {
-  const [apiData, setapiData] = useState([]);
-  const [artists, setArtists] = useState([]);
-  const [users, setUsers] = useState([]);
+  var user_id = localStorage.getItem("username");
+  const MAX = 20;
+
+  const [topAlbums, setTopAlbums] = useState([]);
+  const [uu, setUserUser] = useState([]);
+  const [ii, setItemItem] = useState([]);
+  const [topReproductions, setTopReproductions] = useState([]);
+
   const url_image =
     "https://cdn.discordapp.com/attachments/550845751417110548/1083932968990556240/nota-musical_1.png";
   //"https://cdn-icons-png.flaticon.com/512/876/876817.png";
   // "https://via.placeholder.com/150"
 
+  // Popular songs
   useEffect(() => {
-    fetch(`${BASE_URL}/user_track_rate/max/${10}`)
+    fetch(`${BASE_URL}/user_track_artist/top/${MAX}`)
       .then((res) => res.json())
       .then((data) => {
-        setapiData(data.data);
+        setTopAlbums(data.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  // useEffect(() => {
-  //   fetch(`${BASE_URL}api.php`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setapiData(data.albums);
-  //       setArtists(data.artists);
-  //     });
-  // }, []);
-
+  // Top reproductions by user_id
   useEffect(() => {
-    fetch(`${BASE_URL}/user`)
+    fetch(`${BASE_URL}/user_track_artist/${user_id}/${MAX}`)
       .then((res) => res.json())
       .then((data) => {
-        setUsers(data.data);
+        setTopReproductions(data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  // Item-Item
+  useEffect(() => {
+    fetch(
+      `${BASE_URL}/user_track_artist/recommendation/${user_id}/${MAX}/${"False"}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setItemItem(data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  // User-User
+  useEffect(() => {
+    fetch(
+      `${BASE_URL}/user_track_artist/recommendation/${user_id}/${MAX}/${"True"}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setUserUser(data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -51,20 +77,46 @@ function HomeGrid() {
         className="section-hading"
         style={{ marginTop: "0px", marginBottom: "10px" }}
       >
-        Most Popular Albums
+        Most popular songs
       </h1>
 
       <Container
         id="album-cart-grid"
-        style={{ maxHeight: 215, overflowY: "scroll" }}
+        style={{ maxHeight: 220, overflowY: "scroll" }}
       >
-        {apiData.length > 0 &&
-          apiData.map(({ id, track_name }) => {
+        {topAlbums.length > 0 &&
+          topAlbums.map(({ id, track_name, artist_name }) => {
             return (
               <div key={id}>
                 <SongCard
                   songName={track_name}
-                  artistName={track_name}
+                  artistName={artist_name}
+                  imageUrl={url_image}
+                  id={id}
+                />
+              </div>
+            );
+          })}
+      </Container>
+
+      <h1
+        className="section-hading"
+        style={{ marginTop: "0px", marginBottom: "10px" }}
+      >
+        My top songs
+      </h1>
+
+      <Container
+        id="album-cart-grid"
+        style={{ maxHeight: 220, overflowY: "scroll" }}
+      >
+        {topReproductions.length > 0 &&
+          topReproductions.map(({ id, track_name, artist_name }) => {
+            return (
+              <div key={id}>
+                <SongCard
+                  songName={track_name}
+                  artistName={artist_name}
                   imageUrl={url_image}
                   id={id}
                 />
@@ -82,15 +134,15 @@ function HomeGrid() {
 
       <Container
         id="album-cart-grid"
-        style={{ maxHeight: 215, overflowY: "scroll" }}
+        style={{ maxHeight: 220, overflowY: "scroll" }}
       >
-        {users.length > 0 &&
-          users.map(({ id, user_id }, index) => {
+        {uu.length > 0 &&
+          uu.map(({ id, track_name, artist_name }) => {
             return (
-              <div key={id ? "bb" + id : "default-key-" + index}>
+              <div key={id}>
                 <SongCard
-                  songName={user_id}
-                  artistName={user_id}
+                  songName={track_name}
+                  artistName={artist_name}
                   imageUrl={url_image}
                   id={id}
                 />
@@ -108,15 +160,15 @@ function HomeGrid() {
 
       <Container
         id="album-cart-grid"
-        style={{ maxHeight: 215, overflowY: "scroll" }}
+        style={{ maxHeight: 220, overflowY: "scroll" }}
       >
-        {users.length > 0 &&
-          users.map(({ id, user_id }, index) => {
+        {ii.length > 0 &&
+          ii.map(({ id, track_name, artist_name }) => {
             return (
-              <div key={id ? "bb" + id : "default-key-" + index}>
+              <div key={id}>
                 <SongCard
-                  songName={user_id}
-                  artistName={user_id}
+                  songName={track_name}
+                  artistName={artist_name}
                   imageUrl={url_image}
                   id={id}
                 />

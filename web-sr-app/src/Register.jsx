@@ -14,7 +14,7 @@ function Register({ history }) {
   const [signupErrors, setSignUpErrors] = useState({});
   const [loginError, setLoginError] = useState("");
   const cookies = new Cookies();
-  const [{ }, dispatch] = useStateValue();
+  const [{}, dispatch] = useStateValue();
 
   const toggleForms = () => {
     setShowLoginForm(!showLoginForm);
@@ -58,8 +58,7 @@ function Register({ history }) {
         setSignUpErrors(result.error);
         toast.error("Resolve the errors to continue");
       }
-    } 
-    else {
+    } else {
       toast.error("The passwords are not equals");
     }
   };
@@ -131,19 +130,9 @@ function Register({ history }) {
             <option value="NA">Perfer not to Answer</option>
           </select>
           <p>Age</p>
-          <input
-            type="number"
-            name="age"
-            placeholder="Age"
-            min={0}
-            max={100}
-          />
+          <input type="number" name="age" placeholder="Age" min={0} max={100} />
           <p>Country</p>
-          <input
-            type="text"
-            name="country"
-            placeholder="Country"
-          />
+          <input type="text" name="country" placeholder="Country" />
           <p>Password</p>
           <span className="show-error">{signupErrors?.password}</span>
           <input type="password" name="password" placeholder="Password" />
@@ -175,11 +164,7 @@ function Register({ history }) {
           >
             <p>Username</p>
             <span className="show-error">{loginError}</span>
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-            />
+            <input type="text" name="username" placeholder="Username" />
             <p>Password</p>
             <input type="password" name="password" placeholder="Password" />
             <button
